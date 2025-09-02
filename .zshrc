@@ -5,6 +5,24 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+plugins=(git zsh-autosuggestions zsh-completions zsh-syntax-highlighting aliases z)
+source $ZSH/oh-my-zsh.sh 2>/dev/null
+
+# ===============================
+# PNPM and Lazy NVM (after instant prompt)
+# ===============================
+export PNPM_HOME="$(brew --prefix pnpm)/libexec"
+export PATH="$PNPM_HOME:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+_lazy_nvm() {
+  unset -f nvm node npm npx
+  [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh" 2>/dev/null
+}
+for cmd in nvm node npm npx; do
+  eval "${cmd}() { _lazy_nvm; ${cmd} \"$@\"; }"
+done
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
@@ -227,6 +245,22 @@ extract () {
     echo "'$1' is not a valid file!"
   fi
 }
+
+# ===============================
+# PNPM and Lazy NVM
+# ===============================
+export PNPM_HOME="$HOME/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+_lazy_nvm() {
+  unset -f node npm npx
+  [ -s "$(brew --prefix nvm)/nvm.sh" ] && source "$(brew --prefix nvm)/nvm.sh"
+}
+for cmd in node npm npx; do
+  eval "${cmd}() { _lazy_nvm; ${cmd} \"$@\"; }"
+done
+
 # ===============================
 # Powerlevel10k Configuration
 # ===============================
